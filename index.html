@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Официант PRO | Сохранение данных 📱</title>
+    <title>Официант PRO | Чистый старт</title>
     <style>
         * {
             margin: 0;
@@ -337,6 +337,15 @@
             cursor: pointer;
         }
 
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #8b9a7a;
+            background: #fef9ef;
+            border-radius: 28px;
+            margin-top: 20px;
+        }
+
         .note {
             font-size: 0.7rem;
             color: #7f8c6d;
@@ -385,7 +394,12 @@
                 <input type="text" id="newDishName" placeholder="Новое блюдо, например 'Паста Карбонара'" autocomplete="off">
                 <button id="addDishBtn">➕ Добавить</button>
             </div>
-            <div class="admin-list" id="adminMenuList"></div>
+            <div class="admin-list" id="adminMenuList">
+                <div class="empty-state" style="margin-top:0">
+                    🍽️ Меню пусто<br>
+                    Добавьте первые блюда через форму выше
+                </div>
+            </div>
             <button class="reset-data-btn" id="resetAllDataBtn">⚠️ Сбросить ВСЕ данные (меню + заказы)</button>
             <div class="note">💾 Все данные автоматически сохраняются в телефоне. Перезагрузка не страшна!</div>
         </div>
@@ -401,15 +415,8 @@
         ORDERS: 'restaurant_orders'
     };
 
-    // Дефолтное меню (только если ничего нет в localStorage)
-    const DEFAULT_MENU = [
-        { id: "dish1", name: "🥘 Ризотто с грибами", available: true },
-        { id: "dish2", name: "🍝 Спагетти Болоньезе", available: true },
-        { id: "dish3", name: "🥗 Цезарь с креветками", available: true },
-        { id: "dish4", name: "🍣 Ролл Филадельфия", available: true },
-        { id: "dish5", name: "🍲 Том Ям с креветками", available: true },
-        { id: "dish6", name: "🥩 Стейк Рибай", available: true }
-    ];
+    // ПУСТОЕ меню по умолчанию (никаких блюд)
+    const DEFAULT_MENU = [];  // ← полностью пустое меню
 
     const TABLES_COUNT = 9;
 
@@ -418,7 +425,9 @@
         const saved = localStorage.getItem(STORAGE_KEYS.MENU);
         if (saved) {
             try {
-                return JSON.parse(saved);
+                const parsed = JSON.parse(saved);
+                // если по какой-то причине там пустой массив или есть блюда - ок
+                return parsed;
             } catch(e) {
                 console.error("Ошибка парсинга меню", e);
                 return [...DEFAULT_MENU];
@@ -454,7 +463,7 @@
     function initEmptyOrders() {
         let emptyOrders = {};
         for (let i = 1; i <= TABLES_COUNT; i++) {
-            emptyOrders[i] = [];
+            emptyOrders[i] = [];  // у каждого столика пустой массив заказов
         }
         return emptyOrders;
     }
@@ -521,9 +530,9 @@
 
     // Полный сброс всех данных
     function resetAllData() {
-        if (confirm("⚠️ ВНИМАНИЕ! Это удалит ВСЕ заказы и ВСЁ меню. Вернутся только стандартные блюда. Продолжить?")) {
-            menuDatabase = [...DEFAULT_MENU];
-            orders = initEmptyOrders();
+        if (confirm("⚠️ ВНИМАНИЕ! Это удалит ВСЕ заказы и ВСЁ меню. Будет полностью чистый старт. Продолжить?")) {
+            menuDatabase = [...DEFAULT_MENU];  // пустое меню
+            orders = initEmptyOrders();         // все заказы пустые
             persistAllData();
             currentWaiterTable = null;
             renderWaiterView();
@@ -533,7 +542,7 @@
             } else {
                 renderAdminMenu();
             }
-            alert("✅ Все данные сброшены!");
+            alert("✅ Все данные сброшены! Меню пустое, заказов нет.");
         }
     }
 
@@ -617,39 +626,57 @@
             ordersHtml += `</div>`;
         }
 
-        let selectOptions = `<option value="" disabled selected>-- Выберите блюдо из меню --</option>`;
-        availableDishes.forEach(dish => {
-            selectOptions += `<option value="${dish.id}">${escapeHtml(dish.name)}</option>`;
-        });
+        // Блок добавления блюда
+        if (availableDishes.length === 0) {
+            ordersHtml += `
+                <div class="add-order-section">
+                    <div style="text-align:center; padding: 20px; background:#f0ede3; border-radius: 24px; color:#8b7a5e;">
+                        ⚠️ Меню пусто!<br>
+                        Перейдите в админку и добавьте блюда
+                    </div>
+                </div>
+            `;
+        } else {
+            let selectOptions = `<option value="" disabled selected>-- Выберите блюдо из меню --</option>`;
+            availableDishes.forEach(dish => {
+                selectOptions += `<option value="${dish.id}">${escapeHtml(dish.name)}</option>`;
+            });
 
-        ordersHtml += `
-            <div class="add-order-section">
-                <select id="dishSelect" class="select-dish">
-                    ${selectOptions}
-                </select>
-                <button id="addDishToTableBtn" class="btn-add">➕ Добавить к столику №${tableId}</button>
-            </div>
-        </div>`;
+            ordersHtml += `
+                <div class="add-order-section">
+                    <select id="dishSelect" class="select-dish">
+                        ${selectOptions}
+                    </select>
+                    <button id="addDishToTableBtn" class="btn-add">➕ Добавить к столику №${tableId}</button>
+                </div>
+            `;
+        }
+
+        ordersHtml += `</div>`;
 
         container.innerHTML = ordersHtml;
 
         document.getElementById('clearTableBtn')?.addEventListener('click', () => clearTableOrders(tableId));
 
-        document.getElementById('addDishToTableBtn')?.addEventListener('click', () => {
-            const select = document.getElementById('dishSelect');
-            const selectedDishId = select.value;
-            if (!selectedDishId) {
-                alert("Выберите блюдо из списка!");
-                return;
-            }
-            const selectedDish = menuDatabase.find(d => d.id === selectedDishId);
-            if (selectedDish && selectedDish.available) {
-                addDishToTable(tableId, selectedDish.id, selectedDish.name);
-                renderWaiterView();
-            } else {
-                alert("Блюдо недоступно или не найдено");
-            }
-        });
+        const addBtn = document.getElementById('addDishToTableBtn');
+        if (addBtn) {
+            addBtn.addEventListener('click', () => {
+                const select = document.getElementById('dishSelect');
+                if (!select) return;
+                const selectedDishId = select.value;
+                if (!selectedDishId) {
+                    alert("Выберите блюдо из списка!");
+                    return;
+                }
+                const selectedDish = menuDatabase.find(d => d.id === selectedDishId);
+                if (selectedDish && selectedDish.available) {
+                    addDishToTable(tableId, selectedDish.id, selectedDish.name);
+                    renderWaiterView();
+                } else {
+                    alert("Блюдо недоступно или не найдено");
+                }
+            });
+        }
 
         document.querySelectorAll('.btn-serve').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -676,7 +703,10 @@
         if (!adminContainer) return;
 
         if (menuDatabase.length === 0) {
-            adminContainer.innerHTML = `<div class="admin-item">Меню пусто, добавьте блюда</div>`;
+            adminContainer.innerHTML = `<div class="empty-state" style="margin-top:0">
+                🍽️ Меню пусто<br>
+                Добавьте первые блюда через форму выше
+            </div>`;
             return;
         }
 
@@ -769,8 +799,25 @@
         });
     }
 
+    // Принудительно очищаем localStorage при первом запуске, чтобы гарантировать чистоту
+    function ensureCleanStart() {
+        // Проверяем, есть ли флаг, что это первый запуск (опционально)
+        const isFirstRun = localStorage.getItem('first_run_done');
+        if (!isFirstRun) {
+            // При первом запуске очищаем всё до состояния "пусто"
+            localStorage.setItem(STORAGE_KEYS.MENU, JSON.stringify([]));
+            localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(initEmptyOrders()));
+            localStorage.setItem('first_run_done', 'true');
+        }
+        // перезагружаем данные из хранилища после возможной очистки
+        menuDatabase = loadMenu();
+        orders = loadOrders();
+    }
+
     // Инициализация
     function init() {
+        ensureCleanStart();  // гарантируем чистый старт при первом открытии
+        
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const tab = btn.getAttribute('data-tab');
