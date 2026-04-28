@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Официант PRO | Чистый старт</title>
+    <title>Официант PRO | Вход по паролю</title>
     <style>
         * {
             margin: 0;
@@ -14,8 +14,113 @@
 
         body {
             background: #f4f7f2;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 16px;
-            padding-bottom: 80px;
+        }
+
+        /* Экран входа */
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1e3c1e 0%, #2d5a2c 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 48px;
+            padding: 40px 28px;
+            width: 90%;
+            max-width: 340px;
+            text-align: center;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.2);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .login-icon {
+            font-size: 3.5rem;
+            margin-bottom: 16px;
+        }
+
+        .login-title {
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: #2e5c2e;
+            margin-bottom: 8px;
+        }
+
+        .login-sub {
+            color: #6d7a5e;
+            font-size: 0.85rem;
+            margin-bottom: 28px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 1.2rem;
+            text-align: center;
+            letter-spacing: 4px;
+            border: 2px solid #e0e8d6;
+            border-radius: 60px;
+            outline: none;
+            transition: 0.2s;
+            background: #fefcf5;
+            font-weight: 600;
+        }
+
+        .login-input:focus {
+            border-color: #ff9800;
+            box-shadow: 0 0 0 3px rgba(255,152,0,0.2);
+        }
+
+        .login-btn {
+            margin-top: 24px;
+            width: 100%;
+            background: #2e7d32;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .login-btn:hover {
+            background: #1f5a22;
+            transform: scale(0.98);
+        }
+
+        .error-msg {
+            color: #d32f2f;
+            font-size: 0.8rem;
+            margin-top: 16px;
+            background: #ffebee;
+            padding: 8px;
+            border-radius: 30px;
+        }
+
+        /* Основное приложение (скрыто до входа) */
+        .main-app {
+            display: none;
+            width: 100%;
         }
 
         .app-container {
@@ -71,7 +176,6 @@
             transition: 0.15s;
             border: 2px solid #e0e8d6;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            position: relative;
         }
 
         .table-card.active {
@@ -96,7 +200,6 @@
             font-weight: 500;
         }
 
-        /* Карточка заказа */
         .order-panel {
             background: white;
             border-radius: 28px;
@@ -231,7 +334,6 @@
             cursor: pointer;
         }
 
-        /* Админка */
         .admin-section {
             background: white;
             border-radius: 28px;
@@ -371,119 +473,138 @@
             font-size: 0.65rem;
             opacity: 0.8;
         }
+
+        .logout-btn {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background: #e0d6c8;
+            color: #5c3e1f;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            z-index: 100;
+        }
     </style>
 </head>
 <body>
-<div class="app-container">
-    <div class="tabs">
-        <button class="tab-btn active" data-tab="waiter">🍽️ Официант</button>
-        <button class="tab-btn" data-tab="admin">⚙️ Админ / Меню</button>
-    </div>
 
-    <!-- Вкладка Официант -->
-    <div id="waiterView">
-        <div class="tables-grid" id="tablesGrid"></div>
-        <div id="orderPanelContainer"></div>
+<!-- Экран входа -->
+<div class="login-screen" id="loginScreen">
+    <div class="login-card">
+        <div class="login-icon">🔐</div>
+        <div class="login-title">Официант PRO</div>
+        <div class="login-sub">Введите пароль для доступа</div>
+        <input type="password" id="passwordInput" class="login-input" placeholder="••••" maxlength="4" inputmode="numeric" autofocus>
+        <button id="loginBtn" class="login-btn">Войти</button>
+        <div id="loginError" class="error-msg" style="display: none;">❌ Неверный пароль</div>
     </div>
+</div>
 
-    <!-- Вкладка Админка -->
-    <div id="adminView" style="display: none;">
-        <div class="admin-section">
-            <div class="admin-header">📋 Управление меню</div>
-            <div class="admin-add-form">
-                <input type="text" id="newDishName" placeholder="Новое блюдо, например 'Паста Карбонара'" autocomplete="off">
-                <button id="addDishBtn">➕ Добавить</button>
-            </div>
-            <div class="admin-list" id="adminMenuList">
-                <div class="empty-state" style="margin-top:0">
-                    🍽️ Меню пусто<br>
-                    Добавьте первые блюда через форму выше
-                </div>
-            </div>
-            <button class="reset-data-btn" id="resetAllDataBtn">⚠️ Сбросить ВСЕ данные (меню + заказы)</button>
-            <div class="note">💾 Все данные автоматически сохраняются в телефоне. Перезагрузка не страшна!</div>
+<!-- Основное приложение -->
+<div class="main-app" id="mainApp">
+    <div class="app-container">
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="waiter">🍽️ Официант</button>
+            <button class="tab-btn" data-tab="admin">⚙️ Админ / Меню</button>
         </div>
+
+        <div id="waiterView">
+            <div class="tables-grid" id="tablesGrid"></div>
+            <div id="orderPanelContainer"></div>
+        </div>
+
+        <div id="adminView" style="display: none;">
+            <div class="admin-section">
+                <div class="admin-header">📋 Управление меню</div>
+                <div class="admin-add-form">
+                    <input type="text" id="newDishName" placeholder="Новое блюдо, например 'Паста Карбонара'" autocomplete="off">
+                    <button id="addDishBtn">➕ Добавить</button>
+                </div>
+                <div class="admin-list" id="adminMenuList">
+                    <div class="empty-state">🍽️ Меню пусто<br>Добавьте первые блюда через форму выше</div>
+                </div>
+                <button class="reset-data-btn" id="resetAllDataBtn">⚠️ Сбросить ВСЕ данные (меню + заказы)</button>
+                <div class="note">💾 Все данные автоматически сохраняются в телефоне. Перезагрузка не страшна!</div>
+            </div>
+        </div>
+        <footer>✅ Нажмите на столик → добавить блюдо → отмечайте готовность</footer>
+        <div class="save-badge">💾 Автосохранение</div>
+        <button id="logoutBtn" class="logout-btn">🚪 Выйти</button>
     </div>
-    <footer>✅ Нажмите на столик → добавить блюдо → отмечайте готовность</footer>
-    <div class="save-badge">💾 Автосохранение</div>
 </div>
 
 <script>
-    // ===================== РАБОТА С LOCALSTORAGE =====================
+    // ========== ПАРОЛЬ ==========
+    const CORRECT_PASSWORD = "2008";
+    
+    // ========== РАБОТА С LOCALSTORAGE ==========
     const STORAGE_KEYS = {
         MENU: 'restaurant_menu',
-        ORDERS: 'restaurant_orders'
+        ORDERS: 'restaurant_orders',
+        AUTH: 'restaurant_auth'  // флаг авторизации
     };
 
-    // ПУСТОЕ меню по умолчанию (никаких блюд)
-    const DEFAULT_MENU = [];  // ← полностью пустое меню
-
+    const DEFAULT_MENU = [];  // пустое меню
     const TABLES_COUNT = 9;
 
-    // Загрузка меню из localStorage
+    // Функции работы с данными
     function loadMenu() {
         const saved = localStorage.getItem(STORAGE_KEYS.MENU);
         if (saved) {
             try {
-                const parsed = JSON.parse(saved);
-                // если по какой-то причине там пустой массив или есть блюда - ок
-                return parsed;
+                return JSON.parse(saved);
             } catch(e) {
-                console.error("Ошибка парсинга меню", e);
                 return [...DEFAULT_MENU];
             }
         }
         return [...DEFAULT_MENU];
     }
 
-    // Сохранение меню
     function saveMenu(menu) {
         localStorage.setItem(STORAGE_KEYS.MENU, JSON.stringify(menu));
     }
 
-    // Загрузка заказов из localStorage
+    function initEmptyOrders() {
+        let emptyOrders = {};
+        for (let i = 1; i <= TABLES_COUNT; i++) {
+            emptyOrders[i] = [];
+        }
+        return emptyOrders;
+    }
+
     function loadOrders() {
         const saved = localStorage.getItem(STORAGE_KEYS.ORDERS);
         if (saved) {
             try {
                 return JSON.parse(saved);
             } catch(e) {
-                console.error("Ошибка парсинга заказов", e);
                 return initEmptyOrders();
             }
         }
         return initEmptyOrders();
     }
 
-    // Сохранение заказов
     function saveOrders(orders) {
         localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(orders));
-    }
-
-    function initEmptyOrders() {
-        let emptyOrders = {};
-        for (let i = 1; i <= TABLES_COUNT; i++) {
-            emptyOrders[i] = [];  // у каждого столика пустой массив заказов
-        }
-        return emptyOrders;
     }
 
     // Глобальные переменные
     let menuDatabase = loadMenu();
     let orders = loadOrders();
-
-    // Текущий выбранный столик
     let currentWaiterTable = null;
 
-    // Вспомогательные функции
-    function getAvailableDishes() {
-        return menuDatabase.filter(dish => dish.available === true);
-    }
-
-    // Сохраняем всё после каждого изменения
+    // Сохраняем всё
     function persistAllData() {
         saveMenu(menuDatabase);
         saveOrders(orders);
+    }
+
+    function getAvailableDishes() {
+        return menuDatabase.filter(dish => dish.available === true);
     }
 
     // Добавление блюда к столику
@@ -501,10 +622,8 @@
         return true;
     }
 
-    // Отметить блюдо как принесенное
     function toggleServed(tableId, uniqueId) {
-        const tableOrders = orders[tableId];
-        const item = tableOrders.find(i => i.uniqueId == uniqueId);
+        const item = orders[tableId].find(i => i.uniqueId == uniqueId);
         if (item) {
             item.served = !item.served;
             persistAllData();
@@ -512,14 +631,12 @@
         }
     }
 
-    // Удалить отдельное блюдо
     function removeDishFromOrder(tableId, uniqueId) {
         orders[tableId] = orders[tableId].filter(i => i.uniqueId != uniqueId);
         persistAllData();
         renderWaiterView();
     }
 
-    // Очистить все блюда у столика
     function clearTableOrders(tableId) {
         if (confirm(`Очистить все блюда для столика №${tableId}?`)) {
             orders[tableId] = [];
@@ -528,11 +645,10 @@
         }
     }
 
-    // Полный сброс всех данных
     function resetAllData() {
         if (confirm("⚠️ ВНИМАНИЕ! Это удалит ВСЕ заказы и ВСЁ меню. Будет полностью чистый старт. Продолжить?")) {
-            menuDatabase = [...DEFAULT_MENU];  // пустое меню
-            orders = initEmptyOrders();         // все заказы пустые
+            menuDatabase = [...DEFAULT_MENU];
+            orders = initEmptyOrders();
             persistAllData();
             currentWaiterTable = null;
             renderWaiterView();
@@ -546,7 +662,7 @@
         }
     }
 
-    // ----- Отрисовка -----
+    // Отрисовка
     function renderTablesGrid() {
         const grid = document.getElementById('tablesGrid');
         if (!grid) return;
@@ -585,11 +701,7 @@
         if (!container) return;
 
         if (currentWaiterTable === null) {
-            container.innerHTML = `
-                <div class="order-panel" style="text-align:center; color:#7f8c6d;">
-                    🧾 Выберите столик, чтобы начать заказ
-                </div>
-            `;
+            container.innerHTML = `<div class="order-panel" style="text-align:center; color:#7f8c6d;">🧾 Выберите столик, чтобы начать заказ</div>`;
             return;
         }
 
@@ -626,69 +738,41 @@
             ordersHtml += `</div>`;
         }
 
-        // Блок добавления блюда
         if (availableDishes.length === 0) {
-            ordersHtml += `
-                <div class="add-order-section">
-                    <div style="text-align:center; padding: 20px; background:#f0ede3; border-radius: 24px; color:#8b7a5e;">
-                        ⚠️ Меню пусто!<br>
-                        Перейдите в админку и добавьте блюда
-                    </div>
-                </div>
-            `;
+            ordersHtml += `<div class="add-order-section"><div style="text-align:center; padding: 20px; background:#f0ede3; border-radius: 24px;">⚠️ Меню пусто!<br>Перейдите в админку и добавьте блюда</div></div>`;
         } else {
             let selectOptions = `<option value="" disabled selected>-- Выберите блюдо из меню --</option>`;
             availableDishes.forEach(dish => {
                 selectOptions += `<option value="${dish.id}">${escapeHtml(dish.name)}</option>`;
             });
-
-            ordersHtml += `
-                <div class="add-order-section">
-                    <select id="dishSelect" class="select-dish">
-                        ${selectOptions}
-                    </select>
-                    <button id="addDishToTableBtn" class="btn-add">➕ Добавить к столику №${tableId}</button>
-                </div>
-            `;
+            ordersHtml += `<div class="add-order-section">
+                <select id="dishSelect" class="select-dish">${selectOptions}</select>
+                <button id="addDishToTableBtn" class="btn-add">➕ Добавить к столику №${tableId}</button>
+            </div>`;
         }
-
         ordersHtml += `</div>`;
-
         container.innerHTML = ordersHtml;
 
         document.getElementById('clearTableBtn')?.addEventListener('click', () => clearTableOrders(tableId));
-
         const addBtn = document.getElementById('addDishToTableBtn');
         if (addBtn) {
             addBtn.addEventListener('click', () => {
                 const select = document.getElementById('dishSelect');
                 if (!select) return;
                 const selectedDishId = select.value;
-                if (!selectedDishId) {
-                    alert("Выберите блюдо из списка!");
-                    return;
-                }
+                if (!selectedDishId) { alert("Выберите блюдо!"); return; }
                 const selectedDish = menuDatabase.find(d => d.id === selectedDishId);
                 if (selectedDish && selectedDish.available) {
                     addDishToTable(tableId, selectedDish.id, selectedDish.name);
                     renderWaiterView();
-                } else {
-                    alert("Блюдо недоступно или не найдено");
-                }
+                } else alert("Блюдо недоступно");
             });
         }
-
         document.querySelectorAll('.btn-serve').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const unique = btn.getAttribute('data-unique');
-                if (unique) toggleServed(tableId, unique);
-            });
+            btn.addEventListener('click', () => toggleServed(tableId, btn.getAttribute('data-unique')));
         });
         document.querySelectorAll('.btn-remove-item').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const unique = btn.getAttribute('data-unique');
-                if (unique) removeDishFromOrder(tableId, unique);
-            });
+            btn.addEventListener('click', () => removeDishFromOrder(tableId, btn.getAttribute('data-unique')));
         });
     }
 
@@ -697,24 +781,17 @@
         renderOrderPanel();
     }
 
-    // Админка
     function renderAdminMenu() {
         const adminContainer = document.getElementById('adminMenuList');
         if (!adminContainer) return;
-
         if (menuDatabase.length === 0) {
-            adminContainer.innerHTML = `<div class="empty-state" style="margin-top:0">
-                🍽️ Меню пусто<br>
-                Добавьте первые блюда через форму выше
-            </div>`;
+            adminContainer.innerHTML = `<div class="empty-state">🍽️ Меню пусто<br>Добавьте первые блюда через форму выше</div>`;
             return;
         }
-
         adminContainer.innerHTML = '';
         menuDatabase.forEach(dish => {
-            const availStatus = dish.available;
-            const toggleText = availStatus ? '✅ Доступно' : '❌ Недоступно';
-            const toggleClass = availStatus ? 'available' : 'unavailable';
+            const toggleText = dish.available ? '✅ Доступно' : '❌ Недоступно';
+            const toggleClass = dish.available ? 'available' : 'unavailable';
             const dishDiv = document.createElement('div');
             dishDiv.className = 'admin-item';
             dishDiv.innerHTML = `
@@ -726,32 +803,17 @@
             `;
             adminContainer.appendChild(dishDiv);
         });
-
         document.querySelectorAll('.toggle-avail').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = btn.getAttribute('data-id');
-                const dish = menuDatabase.find(d => d.id === id);
-                if (dish) {
-                    dish.available = !dish.available;
-                    persistAllData();
-                    renderAdminMenu();
-                    if (document.getElementById('waiterView').style.display !== 'none') {
-                        renderWaiterView();
-                    }
-                }
+            btn.addEventListener('click', () => {
+                const dish = menuDatabase.find(d => d.id === btn.getAttribute('data-id'));
+                if (dish) { dish.available = !dish.available; persistAllData(); renderAdminMenu(); if (document.getElementById('waiterView').style.display !== 'none') renderWaiterView(); }
             });
         });
-
         document.querySelectorAll('.delete-dish').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = btn.getAttribute('data-id');
-                if (confirm('Удалить блюдо из меню?')) {
-                    menuDatabase = menuDatabase.filter(d => d.id !== id);
-                    persistAllData();
-                    renderAdminMenu();
-                    if (document.getElementById('waiterView').style.display !== 'none') {
-                        renderWaiterView();
-                    }
+            btn.addEventListener('click', () => {
+                if (confirm('Удалить блюдо?')) {
+                    menuDatabase = menuDatabase.filter(d => d.id !== btn.getAttribute('data-id'));
+                    persistAllData(); renderAdminMenu(); if (document.getElementById('waiterView').style.display !== 'none') renderWaiterView();
                 }
             });
         });
@@ -759,97 +821,81 @@
 
     function addNewDish(dishNameRaw) {
         const dishName = dishNameRaw.trim();
-        if (dishName === "") {
-            alert("Введите название блюда");
-            return false;
-        }
-        const newId = "dish_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
-        menuDatabase.push({
-            id: newId,
-            name: dishName,
-            available: true
-        });
-        persistAllData();
-        renderAdminMenu();
-        if (document.getElementById('waiterView').style.display !== 'none') {
-            renderWaiterView();
-        }
+        if (!dishName) { alert("Введите название"); return false; }
+        menuDatabase.push({ id: "dish_" + Date.now() + "_" + Math.random(), name: dishName, available: true });
+        persistAllData(); renderAdminMenu(); if (document.getElementById('waiterView').style.display !== 'none') renderWaiterView();
         return true;
     }
 
     function switchTab(tabId) {
         const waiterDiv = document.getElementById('waiterView');
         const adminDiv = document.getElementById('adminView');
-        if (tabId === 'waiter') {
-            waiterDiv.style.display = 'block';
-            adminDiv.style.display = 'none';
-            renderWaiterView();
-        } else {
-            waiterDiv.style.display = 'none';
-            adminDiv.style.display = 'block';
-            renderAdminMenu();
-        }
+        if (tabId === 'waiter') { waiterDiv.style.display = 'block'; adminDiv.style.display = 'none'; renderWaiterView(); }
+        else { waiterDiv.style.display = 'none'; adminDiv.style.display = 'block'; renderAdminMenu(); }
         document.querySelectorAll('.tab-btn').forEach(btn => {
-            const btnTab = btn.getAttribute('data-tab');
-            if ((tabId === 'waiter' && btnTab === 'waiter') || (tabId === 'admin' && btnTab === 'admin')) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
+            const t = btn.getAttribute('data-tab');
+            btn.classList.toggle('active', (tabId === 'waiter' && t === 'waiter') || (tabId === 'admin' && t === 'admin'));
         });
     }
 
-    // Принудительно очищаем localStorage при первом запуске, чтобы гарантировать чистоту
-    function ensureCleanStart() {
-        // Проверяем, есть ли флаг, что это первый запуск (опционально)
-        const isFirstRun = localStorage.getItem('first_run_done');
-        if (!isFirstRun) {
-            // При первом запуске очищаем всё до состояния "пусто"
-            localStorage.setItem(STORAGE_KEYS.MENU, JSON.stringify([]));
-            localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(initEmptyOrders()));
-            localStorage.setItem('first_run_done', 'true');
+    // АВТОРИЗАЦИЯ
+    function checkAuth() {
+        const isAuth = localStorage.getItem(STORAGE_KEYS.AUTH) === 'true';
+        if (isAuth) {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            // После входа обновляем данные
+            menuDatabase = loadMenu();
+            orders = loadOrders();
+            renderWaiterView();
+            renderAdminMenu();
+            switchTab('waiter');
+        } else {
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('mainApp').style.display = 'none';
         }
-        // перезагружаем данные из хранилища после возможной очистки
-        menuDatabase = loadMenu();
-        orders = loadOrders();
+    }
+
+    function login(password) {
+        if (password === CORRECT_PASSWORD) {
+            localStorage.setItem(STORAGE_KEYS.AUTH, 'true');
+            checkAuth();
+            document.getElementById('loginError').style.display = 'none';
+        } else {
+            document.getElementById('loginError').style.display = 'block';
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordInput').focus();
+        }
+    }
+
+    function logout() {
+        localStorage.removeItem(STORAGE_KEYS.AUTH);
+        checkAuth();
     }
 
     // Инициализация
     function init() {
-        ensureCleanStart();  // гарантируем чистый старт при первом открытии
+        checkAuth();
+        
+        document.getElementById('loginBtn')?.addEventListener('click', () => {
+            const pwd = document.getElementById('passwordInput').value;
+            login(pwd);
+        });
+        document.getElementById('passwordInput')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') login(e.target.value);
+        });
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
         
         document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const tab = btn.getAttribute('data-tab');
-                if (tab === 'waiter') switchTab('waiter');
-                else if (tab === 'admin') switchTab('admin');
-            });
+            btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab')));
         });
-
-        const addBtn = document.getElementById('addDishBtn');
-        const newDishInput = document.getElementById('newDishName');
-        if (addBtn) {
-            addBtn.addEventListener('click', () => {
-                const val = newDishInput.value;
-                if (addNewDish(val)) newDishInput.value = '';
-            });
-            newDishInput?.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    addBtn.click();
-                }
-            });
-        }
-
-        const resetBtn = document.getElementById('resetAllDataBtn');
-        if (resetBtn) {
-            resetBtn.addEventListener('click', resetAllData);
-        }
-
-        renderWaiterView();
-        renderAdminMenu();
-        switchTab('waiter');
+        document.getElementById('addDishBtn')?.addEventListener('click', () => {
+            const val = document.getElementById('newDishName')?.value;
+            if (addNewDish(val)) document.getElementById('newDishName').value = '';
+        });
+        document.getElementById('resetAllDataBtn')?.addEventListener('click', resetAllData);
     }
-
+    
     init();
 </script>
 </body>
