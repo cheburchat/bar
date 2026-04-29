@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Официант PRO | Вход по паролю</title>
+    <title>Официант PRO | 9 столиков | Количество ±</title>
     <style>
         * {
             margin: 0;
@@ -15,13 +15,9 @@
         body {
             background: #f4f7f2;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 16px;
         }
 
-        /* Экран входа */
         .login-screen {
             position: fixed;
             top: 0;
@@ -33,7 +29,6 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            backdrop-filter: blur(4px);
         }
 
         .login-card {
@@ -44,32 +39,11 @@
             max-width: 340px;
             text-align: center;
             box-shadow: 0 25px 45px rgba(0,0,0,0.2);
-            animation: fadeIn 0.3s ease;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .login-icon {
-            font-size: 3.5rem;
-            margin-bottom: 16px;
-        }
-
-        .login-title {
-            font-size: 1.7rem;
-            font-weight: 800;
-            color: #2e5c2e;
-            margin-bottom: 8px;
-        }
-
-        .login-sub {
-            color: #6d7a5e;
-            font-size: 0.85rem;
-            margin-bottom: 28px;
-        }
-
+        .login-icon { font-size: 3.5rem; margin-bottom: 16px; }
+        .login-title { font-size: 1.7rem; font-weight: 800; color: #2e5c2e; margin-bottom: 8px; }
+        .login-sub { color: #6d7a5e; font-size: 0.85rem; margin-bottom: 28px; }
         .login-input {
             width: 100%;
             padding: 16px 20px;
@@ -79,16 +53,10 @@
             border: 2px solid #e0e8d6;
             border-radius: 60px;
             outline: none;
-            transition: 0.2s;
             background: #fefcf5;
             font-weight: 600;
         }
-
-        .login-input:focus {
-            border-color: #ff9800;
-            box-shadow: 0 0 0 3px rgba(255,152,0,0.2);
-        }
-
+        .login-input:focus { border-color: #ff9800; }
         .login-btn {
             margin-top: 24px;
             width: 100%;
@@ -100,35 +68,10 @@
             font-weight: bold;
             font-size: 1.1rem;
             cursor: pointer;
-            transition: 0.2s;
         }
+        .error-msg { color: #d32f2f; font-size: 0.8rem; margin-top: 16px; background: #ffebee; padding: 8px; border-radius: 30px; display: none; }
 
-        .login-btn:hover {
-            background: #1f5a22;
-            transform: scale(0.98);
-        }
-
-        .error-msg {
-            color: #d32f2f;
-            font-size: 0.8rem;
-            margin-top: 16px;
-            background: #ffebee;
-            padding: 8px;
-            border-radius: 30px;
-        }
-
-        /* Основное приложение (скрыто до входа) */
-        .main-app {
-            display: none;
-            width: 100%;
-        }
-
-        .app-container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* Вкладки */
+        .main-app { display: none; max-width: 600px; margin: 0 auto; }
         .tabs {
             display: flex;
             gap: 8px;
@@ -136,9 +79,7 @@
             background: white;
             padding: 6px;
             border-radius: 60px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
-
         .tab-btn {
             flex: 1;
             text-align: center;
@@ -149,65 +90,34 @@
             border: none;
             font-size: 1rem;
             cursor: pointer;
-            transition: 0.2s;
             color: #5a6e4a;
         }
+        .tab-btn.active { background: #2e7d32; color: white; }
 
-        .tab-btn.active {
-            background: #2e7d32;
-            color: white;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        }
-
-        /* сетка столов */
         .tables-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
             gap: 12px;
             margin-bottom: 24px;
         }
-
         .table-card {
             background: white;
             border-radius: 20px;
             padding: 12px 4px;
             text-align: center;
             cursor: pointer;
-            transition: 0.15s;
             border: 2px solid #e0e8d6;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
-
-        .table-card.active {
-            border-color: #ff9800;
-            background: #fff6e5;
-            transform: scale(0.98);
-        }
-
-        .table-num {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #5c3e1f;
-        }
-
-        .order-count {
-            font-size: 0.7rem;
-            background: #e9f0e3;
-            display: inline-block;
-            padding: 2px 10px;
-            border-radius: 30px;
-            margin-top: 6px;
-            font-weight: 500;
-        }
+        .table-card.active { border-color: #ff9800; background: #fff6e5; }
+        .table-num { font-size: 1.5rem; font-weight: 800; color: #5c3e1f; }
+        .order-count { font-size: 0.7rem; background: #e9f0e3; display: inline-block; padding: 2px 10px; border-radius: 30px; margin-top: 6px; }
 
         .order-panel {
             background: white;
             border-radius: 28px;
             padding: 18px;
             margin-bottom: 20px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
         }
-
         .panel-header {
             display: flex;
             justify-content: space-between;
@@ -217,32 +127,17 @@
             padding-bottom: 10px;
             border-bottom: 2px solid #e6ecde;
         }
-
-        .table-title {
-            font-weight: 800;
-            font-size: 1.4rem;
-        }
-
-        .clear-table-btn {
-            background: #f5e2d6;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 40px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #b94b1f;
-            cursor: pointer;
-        }
+        .table-title { font-weight: 800; font-size: 1.4rem; }
+        .clear-table-btn { background: #f5e2d6; border: none; padding: 6px 14px; border-radius: 40px; font-size: 0.75rem; font-weight: 600; color: #b94b1f; cursor: pointer; }
 
         .menu-items-list {
             display: flex;
             flex-direction: column;
             gap: 12px;
-            max-height: 320px;
+            max-height: 350px;
             overflow-y: auto;
             margin: 16px 0;
         }
-
         .menu-item {
             background: #fefcf5;
             border-radius: 20px;
@@ -254,454 +149,231 @@
             gap: 10px;
             border: 1px solid #ebe5d5;
         }
-
-        .item-info {
-            flex: 2;
-        }
-
-        .item-name {
-            font-weight: 700;
-            font-size: 1rem;
-        }
-
-        .item-status {
-            font-size: 0.7rem;
-            display: inline-block;
-            margin-left: 8px;
-            padding: 2px 8px;
-            border-radius: 20px;
-            background: #f0e3cf;
-        }
-
-        .item-status.served {
-            background: #c8e6c9;
-            color: #1f5a1f;
-        }
-
-        .item-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .btn-serve {
-            background: #4caf50;
-            border: none;
-            color: white;
-            padding: 6px 14px;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 0.75rem;
-            cursor: pointer;
-        }
-
-        .btn-remove-item {
-            background: #ffccbc;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 40px;
-            font-weight: 600;
-            color: #b53b1c;
-            cursor: pointer;
-        }
-
-        .add-order-section {
-            margin-top: 16px;
-            background: #faf8f0;
-            padding: 14px;
-            border-radius: 24px;
-        }
-
-        .select-dish {
-            width: 100%;
-            padding: 12px;
-            border-radius: 60px;
-            border: 1px solid #ddd7c2;
-            background: white;
-            font-weight: 500;
-            margin-bottom: 12px;
-            font-size: 0.9rem;
-        }
-
-        .btn-add {
+        .item-info { flex: 2; }
+        .item-name { font-weight: 700; font-size: 1rem; }
+        .item-quantity {
             background: #ff9800;
-            width: 100%;
-            border: none;
-            padding: 12px;
-            border-radius: 60px;
-            font-weight: bold;
             color: white;
-            font-size: 1rem;
-            cursor: pointer;
-        }
-
-        .admin-section {
-            background: white;
-            border-radius: 28px;
-            padding: 20px;
-        }
-
-        .admin-header {
-            font-weight: 800;
-            font-size: 1.3rem;
-            margin-bottom: 16px;
-        }
-
-        .admin-add-form {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-        }
-
-        .admin-add-form input {
-            flex: 2;
-            padding: 12px;
-            border-radius: 60px;
-            border: 1px solid #ddd;
-            font-size: 0.9rem;
-        }
-
-        .admin-add-form button {
-            background: #2e7d32;
-            border: none;
-            padding: 0 20px;
-            border-radius: 60px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .admin-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .admin-item {
-            background: #f9f7ef;
-            padding: 12px 16px;
-            border-radius: 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .admin-item-name {
-            font-weight: 500;
-        }
-
-        .admin-item-avail {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .toggle-avail {
-            background: #e0e0e0;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 40px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .toggle-avail.available {
-            background: #81c784;
-            color: #1a4d1a;
-        }
-
-        .toggle-avail.unavailable {
-            background: #ef9a9a;
-            color: #831d1d;
-        }
-
-        .delete-dish {
-            background: none;
-            border: none;
-            font-size: 1.3rem;
-            cursor: pointer;
-            color: #b9532a;
-            padding: 0 8px;
-        }
-
-        .reset-data-btn {
-            margin-top: 20px;
-            background: #ffccbc;
-            border: none;
-            padding: 10px;
-            border-radius: 60px;
-            font-weight: 600;
-            color: #b33c1c;
-            width: 100%;
-            cursor: pointer;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: #8b9a7a;
-            background: #fef9ef;
-            border-radius: 28px;
-            margin-top: 20px;
-        }
-
-        .note {
-            font-size: 0.7rem;
-            color: #7f8c6d;
-            margin-top: 12px;
-            text-align: center;
-        }
-
-        footer {
-            text-align: center;
-            font-size: 0.7rem;
-            margin-top: 20px;
-            color: #8b9a7a;
-        }
-
-        .save-badge {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            background: #2e7d32;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.65rem;
-            opacity: 0.8;
-        }
-
-        .logout-btn {
-            position: fixed;
-            bottom: 10px;
-            left: 10px;
-            background: #e0d6c8;
-            color: #5c3e1f;
-            border: none;
-            padding: 6px 14px;
             border-radius: 30px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            cursor: pointer;
-            z-index: 100;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-left: 8px;
         }
+        .item-status { font-size: 0.7rem; display: inline-block; margin-left: 8px; padding: 2px 8px; border-radius: 20px; background: #f0e3cf; }
+        .item-status.served { background: #c8e6c9; color: #1f5a1f; }
+
+        .item-actions { display: flex; gap: 8px; align-items: center; }
+        .qty-btn {
+            background: #e0dcc8;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .qty-num { font-weight: 800; font-size: 1rem; min-width: 28px; text-align: center; }
+        .btn-serve { background: #4caf50; border: none; color: white; padding: 6px 14px; border-radius: 40px; font-weight: 600; font-size: 0.75rem; cursor: pointer; }
+        .btn-remove-item { background: #ffccbc; border: none; padding: 6px 12px; border-radius: 40px; font-weight: 600; color: #b53b1c; cursor: pointer; }
+
+        .add-order-section { margin-top: 16px; background: #faf8f0; padding: 14px; border-radius: 24px; }
+        .select-dish { width: 100%; padding: 12px; border-radius: 60px; border: 1px solid #ddd7c2; background: white; margin-bottom: 12px; font-size: 0.9rem; }
+        .btn-add { background: #ff9800; width: 100%; border: none; padding: 12px; border-radius: 60px; font-weight: bold; color: white; font-size: 1rem; cursor: pointer; }
+
+        .admin-section { background: white; border-radius: 28px; padding: 20px; }
+        .admin-header { font-weight: 800; font-size: 1.3rem; margin-bottom: 16px; }
+        .admin-add-form { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+        .admin-add-form input { flex: 2; padding: 12px; border-radius: 60px; border: 1px solid #ddd; }
+        .admin-add-form button { background: #2e7d32; border: none; padding: 0 20px; border-radius: 60px; color: white; font-weight: bold; cursor: pointer; }
+        .admin-list { display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto; }
+        .admin-item { background: #f9f7ef; padding: 12px 16px; border-radius: 60px; display: flex; justify-content: space-between; align-items: center; }
+        .toggle-avail { background: #e0e0e0; border: none; padding: 6px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
+        .toggle-avail.available { background: #81c784; color: #1a4d1a; }
+        .toggle-avail.unavailable { background: #ef9a9a; color: #831d1d; }
+        .delete-dish { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: #b9532a; padding: 0 8px; }
+        .reset-data-btn { margin-top: 20px; background: #ffccbc; border: none; padding: 10px; border-radius: 60px; font-weight: 600; color: #b33c1c; width: 100%; cursor: pointer; }
+        .empty-state { text-align: center; padding: 40px 20px; color: #8b9a7a; background: #fef9ef; border-radius: 28px; }
+        .note { font-size: 0.7rem; color: #7f8c6d; margin-top: 12px; text-align: center; }
+        footer { text-align: center; font-size: 0.7rem; margin-top: 20px; color: #8b9a7a; }
+        .save-badge { position: fixed; bottom: 10px; right: 10px; background: #2e7d32; color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.65rem; }
+        .logout-btn { position: fixed; bottom: 10px; left: 10px; background: #e0d6c8; color: #5c3e1f; border: none; padding: 6px 14px; border-radius: 30px; font-size: 0.7rem; font-weight: 600; cursor: pointer; z-index: 100; }
     </style>
 </head>
 <body>
 
-<!-- Экран входа -->
 <div class="login-screen" id="loginScreen">
     <div class="login-card">
         <div class="login-icon">🔐</div>
         <div class="login-title">Официант PRO</div>
-        <div class="login-sub">Введите пароль для доступа</div>
+        <div class="login-sub">Введите пароль</div>
         <input type="password" id="passwordInput" class="login-input" placeholder="••••" maxlength="4" inputmode="numeric" autofocus>
         <button id="loginBtn" class="login-btn">Войти</button>
-        <div id="loginError" class="error-msg" style="display: none;">❌ Неверный пароль</div>
+        <div id="loginError" class="error-msg">❌ Неверный пароль</div>
     </div>
 </div>
 
-<!-- Основное приложение -->
 <div class="main-app" id="mainApp">
-    <div class="app-container">
-        <div class="tabs">
-            <button class="tab-btn active" data-tab="waiter">🍽️ Официант</button>
-            <button class="tab-btn" data-tab="admin">⚙️ Админ / Меню</button>
-        </div>
-
-        <div id="waiterView">
-            <div class="tables-grid" id="tablesGrid"></div>
-            <div id="orderPanelContainer"></div>
-        </div>
-
-        <div id="adminView" style="display: none;">
-            <div class="admin-section">
-                <div class="admin-header">📋 Управление меню</div>
-                <div class="admin-add-form">
-                    <input type="text" id="newDishName" placeholder="Новое блюдо, например 'Паста Карбонара'" autocomplete="off">
-                    <button id="addDishBtn">➕ Добавить</button>
-                </div>
-                <div class="admin-list" id="adminMenuList">
-                    <div class="empty-state">🍽️ Меню пусто<br>Добавьте первые блюда через форму выше</div>
-                </div>
-                <button class="reset-data-btn" id="resetAllDataBtn">⚠️ Сбросить ВСЕ данные (меню + заказы)</button>
-                <div class="note">💾 Все данные автоматически сохраняются в телефоне. Перезагрузка не страшна!</div>
-            </div>
-        </div>
-        <footer>✅ Нажмите на столик → добавить блюдо → отмечайте готовность</footer>
-        <div class="save-badge">💾 Автосохранение</div>
-        <button id="logoutBtn" class="logout-btn">🚪 Выйти</button>
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="waiter">🍽️ Официант</button>
+        <button class="tab-btn" data-tab="admin">⚙️ Админ / Меню</button>
     </div>
+    <div id="waiterView">
+        <div class="tables-grid" id="tablesGrid"></div>
+        <div id="orderPanelContainer"></div>
+    </div>
+    <div id="adminView" style="display: none;">
+        <div class="admin-section">
+            <div class="admin-header">📋 Управление меню</div>
+            <div class="admin-add-form">
+                <input type="text" id="newDishName" placeholder="Новое блюдо, например 'Суп гороховый'">
+                <button id="addDishBtn">➕ Добавить</button>
+            </div>
+            <div class="admin-list" id="adminMenuList"></div>
+            <button class="reset-data-btn" id="resetAllDataBtn">⚠️ Сбросить ВСЕ данные</button>
+            <div class="note">💾 Автосохранение | Кнопки +/− меняют количество блюд</div>
+        </div>
+    </div>
+    <footer>✅ Нажмите на столик → добавьте блюдо → меняйте количество +/−</footer>
+    <div class="save-badge">💾 Автосохранение</div>
+    <button id="logoutBtn" class="logout-btn">🚪 Выйти</button>
 </div>
 
 <script>
-    // ========== ПАРОЛЬ ==========
     const CORRECT_PASSWORD = "2008";
-    
-    // ========== РАБОТА С LOCALSTORAGE ==========
-    const STORAGE_KEYS = {
-        MENU: 'restaurant_menu',
-        ORDERS: 'restaurant_orders',
-        AUTH: 'restaurant_auth'  // флаг авторизации
-    };
-
-    const DEFAULT_MENU = [];  // пустое меню
     const TABLES_COUNT = 9;
+    const STORAGE_KEYS = { MENU: 'restaurant_menu_9', ORDERS: 'restaurant_orders_9_qty', AUTH: 'restaurant_auth_9' };
 
-    // Функции работы с данными
-    function loadMenu() {
-        const saved = localStorage.getItem(STORAGE_KEYS.MENU);
-        if (saved) {
-            try {
-                return JSON.parse(saved);
-            } catch(e) {
-                return [...DEFAULT_MENU];
-            }
-        }
-        return [...DEFAULT_MENU];
-    }
-
-    function saveMenu(menu) {
-        localStorage.setItem(STORAGE_KEYS.MENU, JSON.stringify(menu));
-    }
+    let menuDatabase = [];
+    let orders = {};
+    let currentWaiterTable = null;
 
     function initEmptyOrders() {
-        let emptyOrders = {};
-        for (let i = 1; i <= TABLES_COUNT; i++) {
-            emptyOrders[i] = [];
-        }
-        return emptyOrders;
+        let empty = {};
+        for (let i = 1; i <= TABLES_COUNT; i++) empty[i] = [];
+        return empty;
     }
 
-    function loadOrders() {
-        const saved = localStorage.getItem(STORAGE_KEYS.ORDERS);
-        if (saved) {
-            try {
-                return JSON.parse(saved);
-            } catch(e) {
-                return initEmptyOrders();
-            }
-        }
-        return initEmptyOrders();
+    function loadData() {
+        const savedMenu = localStorage.getItem(STORAGE_KEYS.MENU);
+        menuDatabase = savedMenu ? JSON.parse(savedMenu) : [];
+        const savedOrders = localStorage.getItem(STORAGE_KEYS.ORDERS);
+        orders = savedOrders ? JSON.parse(savedOrders) : initEmptyOrders();
     }
 
-    function saveOrders(orders) {
+    function saveData() {
+        localStorage.setItem(STORAGE_KEYS.MENU, JSON.stringify(menuDatabase));
         localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(orders));
     }
 
-    // Глобальные переменные
-    let menuDatabase = loadMenu();
-    let orders = loadOrders();
-    let currentWaiterTable = null;
-
-    // Сохраняем всё
-    function persistAllData() {
-        saveMenu(menuDatabase);
-        saveOrders(orders);
-    }
-
     function getAvailableDishes() {
-        return menuDatabase.filter(dish => dish.available === true);
+        return menuDatabase.filter(d => d.available === true);
     }
 
-    // Добавление блюда к столику
-    function addDishToTable(tableId, dishId, dishName) {
-        if (!tableId) return false;
-        const newOrderItem = {
-            uniqueId: Date.now() + Math.random() * 10000,
-            dishId: dishId,
-            dishName: dishName,
-            served: false,
-            timestamp: Date.now()
-        };
-        orders[tableId].push(newOrderItem);
-        persistAllData();
-        return true;
+    // Найти индекс одинакового блюда (по dishId)
+    function findExistingItemIndex(tableId, dishId) {
+        return orders[tableId].findIndex(item => item.dishId === dishId);
     }
 
-    function toggleServed(tableId, uniqueId) {
+    // Добавить или увеличить количество
+    function addOrIncreaseDish(tableId, dishId, dishName, delta = 1) {
+        if (!tableId) return;
+        const idx = findExistingItemIndex(tableId, dishId);
+        if (idx !== -1) {
+            // уже есть - меняем количество
+            const newQty = orders[tableId][idx].quantity + delta;
+            if (newQty <= 0) {
+                orders[tableId].splice(idx, 1);
+            } else {
+                orders[tableId][idx].quantity = newQty;
+            }
+        } else if (delta > 0) {
+            // новое блюдо
+            orders[tableId].push({
+                uniqueId: Date.now() + Math.random() * 10000,
+                dishId: dishId,
+                dishName: dishName,
+                quantity: delta,
+                served: false,
+                timestamp: Date.now()
+            });
+        }
+        saveData();
+        renderWaiterView();
+    }
+
+    function changeQuantity(tableId, uniqueId, delta) {
         const item = orders[tableId].find(i => i.uniqueId == uniqueId);
         if (item) {
-            item.served = !item.served;
-            persistAllData();
+            const newQty = item.quantity + delta;
+            if (newQty <= 0) {
+                orders[tableId] = orders[tableId].filter(i => i.uniqueId != uniqueId);
+            } else {
+                item.quantity = newQty;
+            }
+            saveData();
             renderWaiterView();
         }
     }
 
+    function toggleServed(tableId, uniqueId) {
+        const item = orders[tableId].find(i => i.uniqueId == uniqueId);
+        if (item) item.served = !item.served;
+        saveData();
+        renderWaiterView();
+    }
+
     function removeDishFromOrder(tableId, uniqueId) {
         orders[tableId] = orders[tableId].filter(i => i.uniqueId != uniqueId);
-        persistAllData();
+        saveData();
         renderWaiterView();
     }
 
     function clearTableOrders(tableId) {
         if (confirm(`Очистить все блюда для столика №${tableId}?`)) {
             orders[tableId] = [];
-            persistAllData();
+            saveData();
             renderWaiterView();
         }
     }
 
     function resetAllData() {
-        if (confirm("⚠️ ВНИМАНИЕ! Это удалит ВСЕ заказы и ВСЁ меню. Будет полностью чистый старт. Продолжить?")) {
-            menuDatabase = [...DEFAULT_MENU];
+        if (confirm("⚠️ Удалить ВСЕ заказы и ВСЁ меню?")) {
+            menuDatabase = [];
             orders = initEmptyOrders();
-            persistAllData();
+            saveData();
             currentWaiterTable = null;
             renderWaiterView();
             renderAdminMenu();
-            if (document.getElementById('waiterView').style.display !== 'none') {
-                renderWaiterView();
-            } else {
-                renderAdminMenu();
-            }
-            alert("✅ Все данные сброшены! Меню пустое, заказов нет.");
         }
     }
 
-    // Отрисовка
     function renderTablesGrid() {
         const grid = document.getElementById('tablesGrid');
         if (!grid) return;
         grid.innerHTML = '';
         for (let i = 1; i <= TABLES_COUNT; i++) {
-            const orderCount = orders[i].length;
+            const totalQty = orders[i].reduce((sum, item) => sum + item.quantity, 0);
             const activeClass = (currentWaiterTable === i) ? 'active' : '';
-            const tableDiv = document.createElement('div');
-            tableDiv.className = `table-card ${activeClass}`;
-            tableDiv.innerHTML = `
-                <div class="table-num">🍽️ ${i}</div>
-                <div class="order-count">📋 ${orderCount} блюд</div>
-            `;
-            tableDiv.addEventListener('click', (function(t) {
-                return () => {
-                    currentWaiterTable = t;
-                    renderWaiterView();
-                };
-            })(i));
-            grid.appendChild(tableDiv);
+            const div = document.createElement('div');
+            div.className = `table-card ${activeClass}`;
+            div.innerHTML = `<div class="table-num">🍽️ ${i}</div><div class="order-count">📋 ${totalQty} шт</div>`;
+            div.onclick = (function(t) { return () => { currentWaiterTable = t; renderWaiterView(); }; })(i);
+            grid.appendChild(div);
         }
     }
 
     function escapeHtml(str) {
         if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
+        return str.replace(/[&<>]/g, function(m) { return m === '&' ? '&amp;' : (m === '<' ? '&lt;' : '&gt;'); });
     }
 
     function renderOrderPanel() {
         const container = document.getElementById('orderPanelContainer');
         if (!container) return;
-
         if (currentWaiterTable === null) {
-            container.innerHTML = `<div class="order-panel" style="text-align:center; color:#7f8c6d;">🧾 Выберите столик, чтобы начать заказ</div>`;
+            container.innerHTML = `<div class="order-panel" style="text-align:center;">🧾 Выберите столик</div>`;
             return;
         }
 
@@ -709,70 +381,72 @@
         const tableOrders = orders[tableId];
         const availableDishes = getAvailableDishes();
 
-        let ordersHtml = `<div class="order-panel">
+        let html = `<div class="order-panel">
             <div class="panel-header">
                 <span class="table-title">🍽️ Столик №${tableId}</span>
                 <button class="clear-table-btn" id="clearTableBtn">🧹 Очистить всё</button>
             </div>`;
 
         if (tableOrders.length === 0) {
-            ordersHtml += `<div style="padding: 16px; text-align:center; background:#faf6e8; border-radius: 24px;">✨ Нет заказов. Добавьте блюдо снизу ✨</div>`;
+            html += `<div style="padding: 16px; text-align:center;">✨ Нет заказов ✨</div>`;
         } else {
-            ordersHtml += `<div class="menu-items-list">`;
+            html += `<div class="menu-items-list">`;
             tableOrders.forEach(item => {
-                const servedStatus = item.served ? '✅ Принесено' : '⏳ Ожидает';
-                const servedClass = item.served ? 'served' : '';
-                ordersHtml += `
+                const statusClass = item.served ? 'served' : '';
+                const statusText = item.served ? '✅ Принесено' : '⏳ Ожидает';
+                html += `
                     <div class="menu-item">
                         <div class="item-info">
                             <span class="item-name">${escapeHtml(item.dishName)}</span>
-                            <span class="item-status ${servedClass}">${servedStatus}</span>
+                            <span class="item-quantity">x${item.quantity}</span>
+                            <span class="item-status ${statusClass}">${statusText}</span>
                         </div>
                         <div class="item-actions">
-                            ${!item.served ? `<button class="btn-serve" data-unique="${item.uniqueId}">🍽️ Принести</button>` : `<button class="btn-serve" style="background:#a5d6a7;" data-unique="${item.uniqueId}">✔️ Готово</button>`}
-                            <button class="btn-remove-item" data-unique="${item.uniqueId}">🗑️ Удалить</button>
+                            <div style="display:flex; align-items:center; gap:4px; background:#efefdf; border-radius:40px; padding:2px 8px;">
+                                <button class="qty-btn decr-btn" data-unique="${item.uniqueId}">−</button>
+                                <span class="qty-num">${item.quantity}</span>
+                                <button class="qty-btn incr-btn" data-unique="${item.uniqueId}">+</button>
+                            </div>
+                            <button class="btn-serve" data-unique="${item.uniqueId}">🍽️</button>
+                            <button class="btn-remove-item" data-unique="${item.uniqueId}">🗑️</button>
                         </div>
                     </div>
                 `;
             });
-            ordersHtml += `</div>`;
+            html += `</div>`;
         }
 
         if (availableDishes.length === 0) {
-            ordersHtml += `<div class="add-order-section"><div style="text-align:center; padding: 20px; background:#f0ede3; border-radius: 24px;">⚠️ Меню пусто!<br>Перейдите в админку и добавьте блюда</div></div>`;
+            html += `<div class="add-order-section"><div style="text-align:center; padding: 16px;">⚠️ Меню пусто. Добавьте блюда в админке</div></div>`;
         } else {
-            let selectOptions = `<option value="" disabled selected>-- Выберите блюдо из меню --</option>`;
-            availableDishes.forEach(dish => {
-                selectOptions += `<option value="${dish.id}">${escapeHtml(dish.name)}</option>`;
-            });
-            ordersHtml += `<div class="add-order-section">
-                <select id="dishSelect" class="select-dish">${selectOptions}</select>
+            let options = `<option value="" disabled selected>-- Выберите блюдо --</option>`;
+            availableDishes.forEach(d => options += `<option value="${d.id}">${escapeHtml(d.name)}</option>`);
+            html += `<div class="add-order-section">
+                <select id="dishSelect" class="select-dish">${options}</select>
                 <button id="addDishToTableBtn" class="btn-add">➕ Добавить к столику №${tableId}</button>
             </div>`;
         }
-        ordersHtml += `</div>`;
-        container.innerHTML = ordersHtml;
+        html += `</div>`;
+        container.innerHTML = html;
 
         document.getElementById('clearTableBtn')?.addEventListener('click', () => clearTableOrders(tableId));
-        const addBtn = document.getElementById('addDishToTableBtn');
-        if (addBtn) {
-            addBtn.addEventListener('click', () => {
-                const select = document.getElementById('dishSelect');
-                if (!select) return;
-                const selectedDishId = select.value;
-                if (!selectedDishId) { alert("Выберите блюдо!"); return; }
-                const selectedDish = menuDatabase.find(d => d.id === selectedDishId);
-                if (selectedDish && selectedDish.available) {
-                    addDishToTable(tableId, selectedDish.id, selectedDish.name);
-                    renderWaiterView();
-                } else alert("Блюдо недоступно");
-            });
-        }
+        document.getElementById('addDishToTableBtn')?.addEventListener('click', () => {
+            const select = document.getElementById('dishSelect');
+            if (!select || !select.value) { alert("Выберите блюдо"); return; }
+            const dish = menuDatabase.find(d => d.id === select.value);
+            if (dish) addOrIncreaseDish(tableId, dish.id, dish.name, 1);
+        });
+        document.querySelectorAll('.incr-btn').forEach(btn => {
+            btn.addEventListener('click', () => changeQuantity(tableId, parseFloat(btn.getAttribute('data-unique')), 1));
+        });
+        document.querySelectorAll('.decr-btn').forEach(btn => {
+            btn.addEventListener('click', () => changeQuantity(tableId, parseFloat(btn.getAttribute('data-unique')), -1));
+        });
         document.querySelectorAll('.btn-serve').forEach(btn => {
-            btn.addEventListener('click', () => toggleServed(tableId, btn.getAttribute('data-unique')));
+            btn.addEventListener('click', () => toggleServed(tableId, parseFloat(btn.getAttribute('data-unique'))));
         });
         document.querySelectorAll('.btn-remove-item').forEach(btn => {
-            btn.addEventListener('click', () => removeDishFromOrder(tableId, btn.getAttribute('data-unique')));
+            btn.addEventListener('click', () => removeDishFromOrder(tableId, parseFloat(btn.getAttribute('data-unique'))));
         });
     }
 
@@ -782,71 +456,75 @@
     }
 
     function renderAdminMenu() {
-        const adminContainer = document.getElementById('adminMenuList');
-        if (!adminContainer) return;
+        const container = document.getElementById('adminMenuList');
+        if (!container) return;
         if (menuDatabase.length === 0) {
-            adminContainer.innerHTML = `<div class="empty-state">🍽️ Меню пусто<br>Добавьте первые блюда через форму выше</div>`;
+            container.innerHTML = `<div class="empty-state">🍽️ Меню пусто<br>Добавьте блюда</div>`;
             return;
         }
-        adminContainer.innerHTML = '';
+        container.innerHTML = '';
         menuDatabase.forEach(dish => {
-            const toggleText = dish.available ? '✅ Доступно' : '❌ Недоступно';
             const toggleClass = dish.available ? 'available' : 'unavailable';
-            const dishDiv = document.createElement('div');
-            dishDiv.className = 'admin-item';
-            dishDiv.innerHTML = `
+            const toggleText = dish.available ? '✅ Доступно' : '❌ Недоступно';
+            const div = document.createElement('div');
+            div.className = 'admin-item';
+            div.innerHTML = `
                 <span class="admin-item-name">${escapeHtml(dish.name)}</span>
                 <div class="admin-item-avail">
                     <button class="toggle-avail ${toggleClass}" data-id="${dish.id}">${toggleText}</button>
                     <button class="delete-dish" data-id="${dish.id}">🗑️</button>
                 </div>
             `;
-            adminContainer.appendChild(dishDiv);
+            container.appendChild(div);
         });
         document.querySelectorAll('.toggle-avail').forEach(btn => {
-            btn.addEventListener('click', () => {
+            btn.onclick = () => {
                 const dish = menuDatabase.find(d => d.id === btn.getAttribute('data-id'));
-                if (dish) { dish.available = !dish.available; persistAllData(); renderAdminMenu(); if (document.getElementById('waiterView').style.display !== 'none') renderWaiterView(); }
-            });
+                if (dish) { dish.available = !dish.available; saveData(); renderAdminMenu(); renderWaiterView(); }
+            };
         });
         document.querySelectorAll('.delete-dish').forEach(btn => {
-            btn.addEventListener('click', () => {
+            btn.onclick = () => {
                 if (confirm('Удалить блюдо?')) {
                     menuDatabase = menuDatabase.filter(d => d.id !== btn.getAttribute('data-id'));
-                    persistAllData(); renderAdminMenu(); if (document.getElementById('waiterView').style.display !== 'none') renderWaiterView();
+                    saveData(); renderAdminMenu(); renderWaiterView();
                 }
-            });
+            };
         });
     }
 
-    function addNewDish(dishNameRaw) {
-        const dishName = dishNameRaw.trim();
+    function addNewDish(name) {
+        const dishName = name.trim();
         if (!dishName) { alert("Введите название"); return false; }
         menuDatabase.push({ id: "dish_" + Date.now() + "_" + Math.random(), name: dishName, available: true });
-        persistAllData(); renderAdminMenu(); if (document.getElementById('waiterView').style.display !== 'none') renderWaiterView();
+        saveData();
+        renderAdminMenu();
+        renderWaiterView();
         return true;
     }
 
     function switchTab(tabId) {
         const waiterDiv = document.getElementById('waiterView');
         const adminDiv = document.getElementById('adminView');
-        if (tabId === 'waiter') { waiterDiv.style.display = 'block'; adminDiv.style.display = 'none'; renderWaiterView(); }
-        else { waiterDiv.style.display = 'none'; adminDiv.style.display = 'block'; renderAdminMenu(); }
+        if (tabId === 'waiter') {
+            waiterDiv.style.display = 'block';
+            adminDiv.style.display = 'none';
+            renderWaiterView();
+        } else {
+            waiterDiv.style.display = 'none';
+            adminDiv.style.display = 'block';
+            renderAdminMenu();
+        }
         document.querySelectorAll('.tab-btn').forEach(btn => {
-            const t = btn.getAttribute('data-tab');
-            btn.classList.toggle('active', (tabId === 'waiter' && t === 'waiter') || (tabId === 'admin' && t === 'admin'));
+            btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
         });
     }
 
-    // АВТОРИЗАЦИЯ
     function checkAuth() {
-        const isAuth = localStorage.getItem(STORAGE_KEYS.AUTH) === 'true';
-        if (isAuth) {
+        if (localStorage.getItem(STORAGE_KEYS.AUTH) === 'true') {
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('mainApp').style.display = 'block';
-            // После входа обновляем данные
-            menuDatabase = loadMenu();
-            orders = loadOrders();
+            loadData();
             renderWaiterView();
             renderAdminMenu();
             switchTab('waiter');
@@ -856,15 +534,13 @@
         }
     }
 
-    function login(password) {
-        if (password === CORRECT_PASSWORD) {
+    function login(pwd) {
+        if (pwd === CORRECT_PASSWORD) {
             localStorage.setItem(STORAGE_KEYS.AUTH, 'true');
             checkAuth();
-            document.getElementById('loginError').style.display = 'none';
         } else {
             document.getElementById('loginError').style.display = 'block';
             document.getElementById('passwordInput').value = '';
-            document.getElementById('passwordInput').focus();
         }
     }
 
@@ -873,30 +549,14 @@
         checkAuth();
     }
 
-    // Инициализация
-    function init() {
-        checkAuth();
-        
-        document.getElementById('loginBtn')?.addEventListener('click', () => {
-            const pwd = document.getElementById('passwordInput').value;
-            login(pwd);
-        });
-        document.getElementById('passwordInput')?.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') login(e.target.value);
-        });
-        document.getElementById('logoutBtn')?.addEventListener('click', logout);
-        
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab')));
-        });
-        document.getElementById('addDishBtn')?.addEventListener('click', () => {
-            const val = document.getElementById('newDishName')?.value;
-            if (addNewDish(val)) document.getElementById('newDishName').value = '';
-        });
-        document.getElementById('resetAllDataBtn')?.addEventListener('click', resetAllData);
-    }
-    
-    init();
+    document.getElementById('loginBtn')?.addEventListener('click', () => login(document.getElementById('passwordInput').value));
+    document.getElementById('passwordInput')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') login(e.target.value); });
+    document.getElementById('logoutBtn')?.addEventListener('click', logout);
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab'))));
+    document.getElementById('addDishBtn')?.addEventListener('click', () => { addNewDish(document.getElementById('newDishName').value); document.getElementById('newDishName').value = ''; });
+    document.getElementById('resetAllDataBtn')?.addEventListener('click', resetAllData);
+
+    checkAuth();
 </script>
 </body>
 </html>
